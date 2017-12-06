@@ -78,12 +78,63 @@
     // --------------------------------------------------------------
     //
     // test if a specific row on this board contains a conflict
+    /*
+    Specification:
+      Input: a number, row index
+      Output: boolean
+      Side effects: None
+      Edge Cases: 
+        - Maybe the row has no pieces
+        - Assume that rowIndex is valid
+    Explanation: 
+        - The row index will let us iterate over each row
+        - Within each row you can add up the value in that box
+        - If that value is greater than 1, then return true
+        - In all other cases return false
+    Viz (draw it):
+    Approximation (psuedocode) :
+    Verfication (go through with example data):
+    Implementation (code it):
+    */
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      // define row
+      var row = this.get(rowIndex);
+      // create a count variable, initialized to 0
+      var count = 0;
+      // iterate over row
+      for (var i = 0; i < row.length; i++) {
+        // increment count by the value of each element in the row array
+        count += row[i];
+      }
+      return count > 1;
     },
 
+    /*
+    Specification:
+      Input: None
+      Output: boolean
+      Side effects: None
+      Edge Cases: None
+    Explanation:
+      - search all rows in the entire board
+      - use .hasRowConflictAt to determine if any row has a conflict
+      - if any row does have a conflict, return true
+      - otherwise resturn false
+    Viz (draw it):
+    Approximation (psuedocode) :
+    Verfication (go through with example data):
+    Implementation (code it):
+    */
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
+      var size = this.get('n');
+      // iterate from 0 to size
+      for (var i = 0; i < size; i++) {
+        // call hasRowConflictAt(i)
+        if (this.hasRowConflictAt(i)) {
+          return true;
+        }
+      }
       return false; // fixme
     },
 
@@ -146,3 +197,17 @@
   };
 
 }());
+
+ /*
+  Specification:
+    Input:
+    Output:
+    Side effects (does running this function change anything):
+    Edge Cases:
+  Justification: (Why woud you call this function?)
+  Explanation (relation between inputs/outputs/side effects):
+  Viz (draw it):
+  Approximation (psuedocode) :
+  Verfication (go through with example data):
+  Implementation (code it):
+  */
