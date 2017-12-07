@@ -241,12 +241,12 @@
       var colIncrease = false;
       var diagonal = [];
       // define inner function that accepts row and column
-      var recurseDiagonal = function(row, col) {
-        var value = this.get(row)[col];
+      var recurseMajorDiagonal = function(row, col) {
+        var piece = this.get(row)[col];
 
-        if (value !== undefined) {
-          // push value at [row, column] to output array
-          diagonal.push(value);
+        if (piece !== undefined) {
+          // push piece at [row, column] to output array
+          diagonal.push(piece);
         }
         // if column + 1 < size
         if (colIncrease) {
@@ -259,7 +259,7 @@
           row++;
           col++;
           // call inner function(row, column)
-          recurseDiagonal.call(this, row, col);
+          recurseMajorDiagonal.call(this, row, col);
         }
       };
 
@@ -271,7 +271,7 @@
       //   rowIncrease = true;
       // }
       // call recursive function [0, n]
-      recurseDiagonal.call(this, 0, col);
+      recurseMajorDiagonal.call(this, 0, col);
 
       // reduce output array
       var sum = diagonal.reduce(function(count, piece) {
@@ -282,8 +282,17 @@
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      
-      return false; // fixme
+      // var i = (n - 1) * -1
+      var n = this.get('n');
+      var i = (n - 1) * -1;
+      // while i < n
+      for (; i < n; i++) {
+        // call hasMajor..., passing in i
+        if (this.hasMajorDiagonalConflictAt(i)) {
+          return true;
+        }
+      }
+      return false;
     },
 
 
@@ -293,12 +302,71 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      // define var col = minor...
+      var col = minorDiagonalColumnIndexAtFirstRow;
+      // define output array diagonal
+      var diagonal = [];
+      // initialize var left = false
+      var left = false;
+    
+      var recurseMinorDiagonal = function(row, col) {
+        // value = this.get(row)[col]
+        var piece = this.get(row)[col];
+        // check to make sure piece is defined
+        if (piece !== undefined) {
+          // push piece to diagonal array
+          diagonal.push(piece);
+        }
+        
+        if (left) {
+          // if col - 1 >= 0
+          if (col - 1 >= 0) {
+            row++;
+            col--;
+            // recurse.call(this, row, col)
+            recurseMinorDiagonal.call(this, row, col);
+          }
+        } else {
+          if (row + 1 < this.get('n')) {
+            row++;
+            col--;
+            // recurse.call(this, row, col)
+            recurseMinorDiagonal.call(this, row, col);
+          }
+        }
+        
+      };
+
+      // if col < n
+      if (col < this.get('n')) {
+        left = true;
+      }
+
+      // call recursive function (with .call for this) passing in 0 for row
+      recurseMinorDiagonal.call(this, 0, col);
+
+      // initialize sum to a reduce function on diagonal
+      var sum = diagonal.reduce(function(count, piece) {
+        return count + piece;
+      });
+      
+      return sum > 1;
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      // initialize size as this.get('n')
+      var size = this.get('n');
+      // intitalize max as n * 2 - 1
+      var max = size * 2 - 1;
+      // loop from 0 to max
+      for (var i = 0; i < max; i++) {
+        // call hasMinor..(i)
+        if (this.hasMinorDiagonalConflictAt(i)) {
+          return true;
+        }
+      }
+      return false;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
