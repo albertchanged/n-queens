@@ -67,7 +67,7 @@ window.countNRooksSolutions = function(n) {
   var solutionCount = 0;
   var solutionArray = [];
 
-  var placeRooks = function(board, numRooks) {
+  var placeRooks = function(board, numRooks, i, j) {
     
     // Check if solution found
     if (numRooks === n) {
@@ -80,9 +80,10 @@ window.countNRooksSolutions = function(n) {
       }
       return;
     } 
-
-    for (var rowIndex = 0; rowIndex < n; rowIndex++) {
-      for (var colIndex = 0; colIndex < n; colIndex++) {
+    
+    // loop over board
+    for (var rowIndex = i; rowIndex < n; rowIndex++) {
+      for (var colIndex = j; colIndex < n; colIndex++) {
         // Check if there is a piece in the current spot
         if (board.get(rowIndex)[colIndex] === 0) {
           // toggle a piece to try
@@ -94,7 +95,7 @@ window.countNRooksSolutions = function(n) {
             // Lets start a new decision tree with the board in its
             // current state
             numRooks++;
-            placeRooks.call(board, board, numRooks);
+            placeRooks.call(board, board, numRooks, rowIndex, colIndex);
             
             // We've finished that decision tree.
             // Lets remove the piece that started it and continue
@@ -110,7 +111,7 @@ window.countNRooksSolutions = function(n) {
     }
   };
   var board = new Board({n: n});
-  placeRooks.call(board, board, 0);
+  placeRooks.call(board, board, 0, 0, 0);
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
