@@ -375,7 +375,32 @@
         }
       }
       return false;
+    },
+
+    voidRow: function(rowIndex, colIndex) {
+      var rowToVoid = this.get(rowIndex);
+      for (var i = 0; i < rowToVoid.length; i++) {
+        if (i !== colIndex) {
+          rowToVoid[i] = undefined;
+        }
+      }
+    },
+
+    voidCol: function(rowIndex, colIndex) {
+      // define size as this.get('n')
+      var size = this.get('n');
+      // for loop from i = 0 to size
+      for (var i = 0; i < size; i++) {
+        // define row as this.get(i)
+        var row = this.get(i);
+        // if i != rowIndex 
+        if (i !== rowIndex) {
+          // set row[colIndex] to undefined
+          row[colIndex] = undefined;
+        }
+      }
     }
+
 
     /*--------------------  End of Helper Functions  ---------------------*/
 
