@@ -219,12 +219,70 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
+    /*
+    Specification: 
+      Input: column index [can be negative]
+      Output: Boolean
+      Side effects (does running this function change anything): None
+      Edge Cases: Negative column index
+    Explanation (relation between inputs/outputs/side effects):
+      - true: a diagonal starting from first row at colIndex, from left to right, contains 2
+      - false: else
+    Viz (draw it):
+    Approximation (psuedocode) :
+    Verfication (go through with example data):
+    Implementation (code it):
+    */
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      // var n = majorDiagonal
+      var col = majorDiagonalColumnIndexAtFirstRow;
+      // define output array, which will be a diagonal
+      // var rowIncrease = false;
+      var colIncrease = false;
+      var diagonal = [];
+      // define inner function that accepts row and column
+      var recurseDiagonal = function(row, col) {
+        var value = this.get(row)[col];
+
+        if (value !== undefined) {
+          // push value at [row, column] to output array
+          diagonal.push(value);
+        }
+        // if column + 1 < size
+        if (colIncrease) {
+          var check = col;
+        } else {
+          var check = row;
+        }
+        if (check + 1 < this.get('n')) {
+          // row++, col++
+          row++;
+          col++;
+          // call inner function(row, column)
+          recurseDiagonal.call(this, row, col);
+        }
+      };
+
+      // if n > 0 (positive)
+      if (col >= 0) {
+        colIncrease = true;
+      } 
+      // else {
+      //   rowIncrease = true;
+      // }
+      // call recursive function [0, n]
+      recurseDiagonal.call(this, 0, col);
+
+      // reduce output array
+      var sum = diagonal.reduce(function(count, piece) {
+        return count + piece;
+      });    
+      return sum > 1; // fixme
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
+      
       return false; // fixme
     },
 
