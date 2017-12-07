@@ -86,14 +86,16 @@ window.countNRooksSolutions = function(n) {
 
               var boardString = JSON.stringify(board.rows());
               if (!solutionArray.includes(boardString)) {
-                console.log(board.rows());
+                // console.log(board.rows());
                 solutionArray.push(boardString);
                 solutionCount++;
               }
             } else {
-              var boardCopyMatrix = JSON.parse(JSON.stringify(board.rows()));
-              var boardCopy = new Board(boardCopyMatrix);
-              placeRooks.call(boardCopy, boardCopy, numRooks);
+              // var boardCopyMatrix = JSON.parse(JSON.stringify(board.rows()));
+              // var boardCopy = new Board(boardCopyMatrix);
+              var state = JSON.stringify(board.rows());
+              placeRooks.call(board, board, numRooks);
+              board = new Board(JSON.parse(state));
               board.togglePiece(i, j); // remove a rook
               numRooks--;
             }
