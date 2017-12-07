@@ -64,29 +64,41 @@ window.findNRooksSolution = function(n) {
 // why doesn't recursive function run again placing rook in different position
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutions = 0; //fixme
+  var solutionCount = 0; //fixme
+  var solutionArray = [];
 
   var placeRooks = function(board, numRooks) {
-    // if numRooks === n
-    if (numRooks === n) {
-      // return board  
-      solutions++;
-    }
     // iterate i to size
     for (var i = 0; i < n; i++) {
       // iterate j to size
       for (var j = 0; j < n; j++) {
         // if this.get(i)[j] === 0
-        if (this.get(i)[j] === 0) {
+        if (board.get(i)[j] === 0) {
           // call togglePiece(i, j)
-          this.togglePiece(i, j);          
+          board.togglePiece(i, j); // place a rook        
           // if this.hasRow === false && this.hasCol === false
-          if (!this.hasRowConflictAt(i) && !this.hasColConflictAt(j)) {
+          if (!board.hasRowConflictAt(i) && !board.hasColConflictAt(j)) { // Has no conflicts
             // recurse placeRooks(board, numRooks)
             numRooks++;
-            return placeRooks.call(board, board, numRooks);
+            // if numRooks === n
+            if (numRooks === n) {
+              // return board 
+
+              var boardString = JSON.stringify(board.rows());
+              if (!solutionArray.includes(boardString)) {
+                console.log(board.rows());
+                solutionArray.push(boardString);
+                solutionCount++;
+              }
+            } else {
+              var boardCopyMatrix = JSON.parse(JSON.stringify(board.rows()));
+              var boardCopy = new Board(boardCopyMatrix);
+              placeRooks.call(boardCopy, boardCopy, numRooks);
+              board.togglePiece(i, j); // remove a rook
+              numRooks--;
+            }
           } else {
-            this.togglePiece(i, j);
+            board.togglePiece(i, j); // remove a rook
           }
         }
       }
@@ -95,7 +107,7 @@ window.countNRooksSolutions = function(n) {
   var board = new Board({n: n});
   placeRooks.call(board, board, 0);
   // console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  return solutions;
+  return solutionCount;
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
