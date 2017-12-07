@@ -32,33 +32,35 @@ window.findNRooksSolution = function(n) {
   var solution = undefined; //fixme
   // Define inner function called placeRooks(board, numRooks)
   var placeRooks = function(board, numRooks) {
+    // if numRooks === n
+    if (numRooks === n) {
+      // return board  
+      return board._toMatrix();
+    }
     // iterate i to size
     for (var i = 0; i < n; i++) {
       // iterate j to size
-      for (var j = 0; j < n; i++) {
+      for (var j = 0; j < n; j++) {
         // if this.get(i)[j] === 0
         if (this.get(i)[j] === 0) {
           // call togglePiece(i, j)
-          this.togglePiece(i, j);
-          numRooks++;
+          this.togglePiece(i, j);          
           // if this.hasRow === false && this.hasCol === false
           if (!this.hasRowConflictAt(i) && !this.hasColConflictAt(j)) {
-            // if numRooks === n
-            if (numRooks === n) {
-              // return board
-              return JSON.stringify(board);
-            }
             // recurse placeRooks(board, numRooks)
-            placeRooks(board, numRooks);
+            numRooks++;
+            return placeRooks.call(board, board, numRooks);
+          } else {
+            this.togglePiece(i, j);
           }
         }
       }
     }
   };
-  var b = new Board({n: n});
-  placeRooks(b, n);   
+  var board = new Board({n: n});
+  return placeRooks.call(board, board, 0);   
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
-  return solution;
+  // return solution;
 };
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other

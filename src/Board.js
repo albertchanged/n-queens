@@ -60,7 +60,15 @@
         0 <= colIndex && colIndex < this.get('n')
       );
     },
-
+    
+    _toMatrix: function() {
+      var matrix = [];
+      var rows = this.rows();
+      for (var row in rows) {
+        matrix.push(rows[row]);
+      }
+      return matrix;
+    },
 
 /*
          _             _     _
