@@ -64,43 +64,46 @@ window.findNRooksSolution = function(n) {
 // why doesn't recursive function run again placing rook in different position
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = 0; //fixme
+  var solutionCount = 0;
   var solutionArray = [];
 
   var placeRooks = function(board, numRooks) {
-    // iterate i to size
-    for (var i = 0; i < n; i++) {
-      // iterate j to size
-      for (var j = 0; j < n; j++) {
-        // if this.get(i)[j] === 0
-        if (board.get(i)[j] === 0) {
-          // call togglePiece(i, j)
-          board.togglePiece(i, j); // place a rook        
-          // if this.hasRow === false && this.hasCol === false
-          if (!board.hasRowConflictAt(i) && !board.hasColConflictAt(j)) { // Has no conflicts
-            // recurse placeRooks(board, numRooks)
-            numRooks++;
-            // if numRooks === n
-            if (numRooks === n) {
-              // return board 
+    
+    // Check if solution found
+    if (numRooks === n) {
+      // Store it to check against later 
+      var boardString = JSON.stringify(board.rows());
+      if (!solutionArray.includes(boardString)) {
+        //console.log(board.rows());
+        solutionArray.push(boardString);
+        solutionCount++;
+      }
+      return;
+    } 
 
-              var boardString = JSON.stringify(board.rows());
-              if (!solutionArray.includes(boardString)) {
-                // console.log(board.rows());
-                solutionArray.push(boardString);
-                solutionCount++;
-              }
-            } else {
-              // var boardCopyMatrix = JSON.parse(JSON.stringify(board.rows()));
-              // var boardCopy = new Board(boardCopyMatrix);
-              var state = JSON.stringify(board.rows());
-              placeRooks.call(board, board, numRooks);
-              board = new Board(JSON.parse(state));
-              board.togglePiece(i, j); // remove a rook
-              numRooks--;
-            }
+    for (var rowIndex = 0; rowIndex < n; rowIndex++) {
+      for (var colIndex = 0; colIndex < n; colIndex++) {
+        // Check if there is a piece in the current spot
+        if (board.get(rowIndex)[colIndex] === 0) {
+          // toggle a piece to try
+          board.togglePiece(rowIndex, colIndex);
+          // Check if board with this piece has a conflict
+          if (!board.hasRowConflictAt(rowIndex) && !board.hasColConflictAt(colIndex)) { 
+            
+            // There were no conflicts
+            // Lets start a new decision tree with the board in its
+            // current state
+            numRooks++;
+            placeRooks.call(board, board, numRooks);
+            
+            // We've finished that decision tree.
+            // Lets remove the piece that started it and continue
+            // exploring
+            board.togglePiece(rowIndex, colIndex);
+            numRooks--;
           } else {
-            board.togglePiece(i, j); // remove a rook
+            // There were conflicts, untoggle the piece
+            board.togglePiece(rowIndex, colIndex);
           }
         }
       }
@@ -108,7 +111,7 @@ window.countNRooksSolutions = function(n) {
   };
   var board = new Board({n: n});
   placeRooks.call(board, board, 0);
-  // console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
+  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
 
