@@ -135,7 +135,7 @@
           return true;
         }
       }
-      return false; // fixme
+      return false;
     },
 
 
@@ -144,13 +144,73 @@
     // --------------------------------------------------------------
     //
     // test if a specific column on this board contains a conflict
+
+    /*
+    Specification:
+      Input: A number colIndex
+      Output: A boolean
+      Side effects: none
+      Edge Cases: 
+        - Maybe the row has no pieces
+        - Assume that rowIndex is valid
+    Explanation:
+      colIndex -> true/false
+
+      Return if total value of items in column at colIndex > 1
+  
+        - need a way to define row
+        - loop over row, using i until row.length
+        - for each row, pass in column index
+        - increment count by the value of row[i][colIndex]
+        - return count > 1
+    Viz (draw it):
+    Approximation (psuedocode) :
+    Verfication (go through with example data):
+    Implementation (code it):
+    */
+
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      // need a way to define row
+      // define size?
+      var count = 0;
+      var numRows = this.get('n');
+      // loop over row, using i until row.length
+      for (var i = 0; i < numRows; i++) {
+        // for each row, pass in column index
+        var row = this.get(i);
+        // increment count by the value of row[i][colIndex]
+        count += row[colIndex];
+      }
+      return count > 1;
     },
 
+  
+    /*
+    Specification:
+      Input: None
+      Output: Boolean
+      Side effects: None
+      Edge Cases: None
+    Explanation:
+      - true: if any column hasColConflictAt returns true
+      - false: else
+    Viz (draw it):
+    Approximation (psuedocode) :
+    Verfication (go through with example data):
+    Implementation (code it):
+    */
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      return false; // fixme
+      // define num cols as a variable
+      var numCols = this.get('n');
+      // iterate through the columns using i
+      for (var i = 0; i < numCols; i++) {
+        // if call hasColConflictAt(i) is true
+        if (this.hasColConflictAt(i)) {
+          return true;
+        }
+      }
+      return false;
     },
 
 
@@ -198,13 +258,12 @@
 
 }());
 
- /*
+  /*
   Specification:
     Input:
     Output:
     Side effects (does running this function change anything):
     Edge Cases:
-  Justification: (Why woud you call this function?)
   Explanation (relation between inputs/outputs/side effects):
   Viz (draw it):
   Approximation (psuedocode) :
