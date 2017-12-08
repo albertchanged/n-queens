@@ -67,7 +67,7 @@ window.countNRooksSolutions = function(n) {
   var solutionCount = 0;
   var solutionArray = [];
 
-  var placeRooks = function(board, numRooks, i, j) {
+  var placeRooks = function(board, numRooks, rowIndex) {
     
     // Check if solution found
     if (numRooks === n) {
@@ -82,37 +82,57 @@ window.countNRooksSolutions = function(n) {
     } 
     
     // loop over board
-    for (var rowIndex = i; rowIndex < n; rowIndex++) {
-      for (var colIndex = j; colIndex < n; colIndex++) {
-        // Check if there is a piece in the current spot
-        if (board.get(rowIndex)[colIndex] === 0) {
-          // toggle a piece to try
+    // for (var rowIndex = i; rowIndex < n; rowIndex++) {
+    for (var colIndex = 0; colIndex < n; colIndex++) {
+      // Check if there is a piece in the current spot
+      if (board.get(rowIndex)[colIndex] === 0) {
+        // toggle a piece to try
+        board.togglePiece(rowIndex, colIndex);
+        // Check if board with this piece has a conflict
+        if (!board.hasRowConflictAt(rowIndex) && !board.hasColConflictAt(colIndex)) { 
+          // There were no conflicts
+          // Lets start a new decision tree with the board in its
+          // current state
+          numRooks++;
+          // rowIndex++;
+          placeRooks.call(board, board, numRooks, rowIndex + 1);
+          // We've finished that decision tree.
+          // Lets remove the piece that started it and continue
+          // exploring
           board.togglePiece(rowIndex, colIndex);
-          // Check if board with this piece has a conflict
-          if (!board.hasRowConflictAt(rowIndex) && !board.hasColConflictAt(colIndex)) { 
-            
-            // There were no conflicts
-            // Lets start a new decision tree with the board in its
-            // current state
-            numRooks++;
-            placeRooks.call(board, board, numRooks, rowIndex, colIndex);
-            
-            // We've finished that decision tree.
-            // Lets remove the piece that started it and continue
-            // exploring
-            board.togglePiece(rowIndex, colIndex);
-            numRooks--;
-          } else {
-            // There were conflicts, untoggle the piece
-            board.togglePiece(rowIndex, colIndex);
-          }
+          numRooks--;
+        } else {
+          // There were conflicts, untoggle the piece
+          board.togglePiece(rowIndex, colIndex);
         }
       }
     }
   };
   var board = new Board({n: n});
-  placeRooks.call(board, board, 0, 0, 0);
+  placeRooks.call(board, board, 0, 0);
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
+  return solutionCount;
+};
+// Official solution
+window.countNRooksSolutionsOfficial = function(n) {
+  var solutionCount = 0;
+  var board = new Board({n: n});
+
+  var placeRooks = function(row) {
+    if (row === n) {
+      solutionCount++;
+      return;
+    }
+    for (var colIndex = 0; colIndex < n; colIndex++) {
+      board.togglePiece(row, colIndex);
+      
+      if (!board.hasRowConflictAt(colIndex) && !board.hasColConflictAt(colIndex)) {
+        placeRooks(row + 1);
+      }
+      board.togglePiece(row, colIndex);
+    }
+  };
+  placeRooks(0);
   return solutionCount;
 };
 
@@ -126,8 +146,23 @@ window.findNQueensSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutionCount = 0;
+  var board = new Board({n: n});
 
-  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
+  var placeQueens = function(row) {
+    if (row === n) {
+      solutionCount++;
+      return;
+    }
+    for (var colIndex = 0; colIndex < n; colIndex++) {
+      board.togglePiece(row, colIndex);
+      
+      if (!board.hasAnyQueenConflictsOn(row, colIndex)) {
+        placeQueens(row + 1);
+      }
+      board.togglePiece(row, colIndex);
+    }
+  };
+  placeQueens(0);
   return solutionCount;
 };
